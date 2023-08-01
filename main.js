@@ -1,3 +1,8 @@
+let firstOperand = "";
+let secondOperand = "";
+let operator = null;
+let shouldResetScreen = false;
+
 const numberButtons = document.querySelectorAll('#number-button');
 const operatorButtons = document.querySelectorAll('#operator-button');
 const equalsButton = document.querySelector('#equals-button');
@@ -5,12 +10,6 @@ const clearButton = document.querySelector('#clear-button');
 const deleteButton = document.querySelector('#delete-button');
 const pointButton = document.querySelector('#point-button');
 const screen = document.querySelector('#calculator-screen');
-
-let firstOperand = "";
-let secondOperand = "";
-let operator = null;
-let shouldResetScreen = false;
-
 
 numberButtons.forEach((button) =>
     button.addEventListener('click', () => 
@@ -21,53 +20,54 @@ operatorButtons.forEach((button) =>
     button.addEventListener('click', setOperator)
 );
 
-equalsButton.addEventListener('click', getScore);
-clearButton.addEventListener('click', clearScreen);
+equalsButton.addEventListener('click', evaluate);
+clearButton.addEventListener('click', clear);
 deleteButton.addEventListener('click', deleteNumber);
-pointButton.addEventListener('click', setPoint);
+pointButton.addEventListener('click', appendPoint);
 
 function appendNumber(number) {
-    if (screen.textContent === "0" || shouldResetScreen === true) resetScreen();
+    if (screen.textContent === "0" || shouldResetScreen) resetScreen();
     screen.textContent += number;
 }
 
-function setOperator(operatorButton) {
-    if (operator === null) {
-        firstOperand = screen.textContent;
-        operator = operatorButton.target.textContent;
-    } else {
-        operator = operatorButton.target.textContent;
-        getScore();
-    }
-    shouldResetScreen = true;
+function resetScreen() {
+    screen.textContent = "";
+    shouldResetScreen = false;
 }
 
-function getScore() {
-    secondOperand = screen.textContent;
-    firstOperand = operate(operator, firstOperand, secondOperand);
-    secondOperand = "";
-    screen.textContent = firstOperand;
-}
-
-function clearScreen() {
+function clear() {
     screen.textContent = "0";
     firstOperand = "";
     secondOperand = "";
     operator = null;
 }
 
-function resetScreen() {
-    {
-      screen.textContent = "";
-      shouldResetScreen = false;
+function appendPoint() {
+    if (shouldResetScreen) {
+        resetScreen();
+        screen.textContent = "0";
     }
+    if (screen.textContent.includes(".")) return;
+    screen.textContent += ".";
 }
 
-function deleteNumber() {}
+function deleteNumber() {
+    screen.textContent = screen.textContent.toString().slice(0, -1);
+}
 
-function setPoint() {
-    if (screen.textContent.includes(".") || screen.textContent === "") return;
-    screen.textContent += ".";
+function setOperator(operatorButton) {
+    if (operator !== null) evaluate();
+    firstOperand = screen.textContent;
+    operator = operatorButton.target.textContent;
+    shouldResetScreen = true;
+}
+
+function evaluate() {
+    if (operator === null || shouldResetScreen) return;
+    if (operator === "÷" && screen.textContent === "0") return;
+    secondOperand = screen.textContent;
+    screen.textContent = operate(operator, firstOperand, secondOperand);
+    operator = null;
 }
 
 // Funcion suma
@@ -110,13 +110,14 @@ function operate(operator, a, b) {
             return substract(a, b);
         case '*':
             return multiply(a, b);
-        case '/':
-            return divide(a, b);
+        case '÷':
+            if (b === 0) return null;
+            else return divide(a, b);
         case '^':
             return power(a, b);
         case '!':
             return factorial(a);
         default:
-            return;
+            return null;
     }
 }
