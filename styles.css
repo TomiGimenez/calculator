@@ -59,7 +59,7 @@ button {
 }
 
 .screen {
-    min-height: 120px;
+    min-height: 150px;
     padding: 20px;
     border: 2px var(--border) solid;
     border-radius: 10px;
@@ -71,6 +71,7 @@ button {
 }
 
 .screen-last {
+    min-height: 35px;
     font-size: 30px;
 }
 
