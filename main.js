@@ -1,17 +1,18 @@
+let firstOperand = '';
+let secondOperand = '';
+let currentOperation = null;
+let shouldResetScreen = false;
+
 const numberButtons = document.querySelectorAll('#number-button');
 const operatorButtons = document.querySelectorAll('#operator-button');
 const equalsButton = document.querySelector('#equals-button');
 const clearButton = document.querySelector('#clear-button');
 const deleteButton = document.querySelector('#delete-button');
 const pointButton = document.querySelector('#point-button');
-const screen = document.querySelector('#calculator-screen');
+const lastOperationScreen = document.querySelector('#lastOperationScreen');
+const currentOperationScreen = document.querySelector('#currentOperationScreen');
 
-let firstOperand = "";
-let secondOperand = "";
-let currentOperation = null;
-let shouldResetScreen = false;
-
-window.addEventListener('keydown', setInput);
+window.addEventListener('keydown', handleKeyboardInput);
 equalsButton.addEventListener('click', evaluate);
 clearButton.addEventListener('click', clear);
 deleteButton.addEventListener('click', deleteNumber);
@@ -26,51 +27,53 @@ operatorButtons.forEach((button) =>
 );
 
 function appendNumber(number) {
-    if (screen.textContent === "0" || shouldResetScreen) resetScreen();
-    screen.textContent += number;
+    if (currentOperationScreen.textContent === '0' || shouldResetScreen) resetScreen();
+    currentOperationScreen.textContent += number;
 }
 
 function resetScreen() {
-    screen.textContent = "";
+    currentOperationScreen.textContent = '';
     shouldResetScreen = false;
 }
 
 function clear() {
-    screen.textContent = "0";
-    firstOperand = "";
-    secondOperand = "";
+    currentOperationScreen.textContent = '0';
+    lastOperationScreen.textContent = '';
+    firstOperand = '';
+    secondOperand = '';
     currentOperation = null;
 }
 
 function appendPoint() {
     if (shouldResetScreen) resetScreen();
-    if (screen.textContent === "") screen.textContent = "0";
-    if (screen.textContent.includes(".")) return;
-    screen.textContent += ".";
+    if (currentOperationScreen.textContent === '') currentOperationScreen.textContent = "0";
+    if (currentOperationScreen.textContent.includes('.')) return;
+    currentOperationScreen.textContent += '.';
 }
 
 function deleteNumber() {
-    screen.textContent = screen.textContent.toString().slice(0, -1);
+    currentOperationScreen.textContent = currentOperationScreen.textContent.toString().slice(0, -1);
 }
 
 function setOperation(operator) {
     if (currentOperation !== null) evaluate();
-    firstOperand = screen.textContent;
+    firstOperand = currentOperationScreen.textContent;
     currentOperation = operator;
+    lastOperationScreen.textContent = `${firstOperand} ${currentOperation}`
     shouldResetScreen = true;
 }
 
 function evaluate() {
     if (currentOperation === null || shouldResetScreen) return;
-    if (currentOperation === "÷" && screen.textContent === "0") {
+    if (currentOperation === '÷' && currentOperationScreen.textContent === '0') {
         alert("You can't divide by 0!")
-        clear();
         return;
     }
-    secondOperand = screen.textContent;
-    screen.textContent = roundResult(
+    secondOperand = currentOperationScreen.textContent;
+    currentOperationScreen.textContent = roundResult(
         operate(currentOperation, firstOperand, secondOperand)
     );
+    lastOperationScreen.textContent = `${firstOperand} ${currentOperation} ${secondOperand} =`
     currentOperation = null;
 }
 
@@ -78,21 +81,21 @@ function roundResult(number) {
     return Math.round(number * 1000) / 1000;
 }
 
-function setInput(e) {
+function handleKeyboardInput(e) {
     if (e.key >= 0 && e.key <= 9) appendNumber(e.key);
-    if (e.key === ".") appendPoint();
-    if (e.key === "=" || e.key === "Enter") evaluate();
-    if (e.key === "Backspace") deleteNumber();
-    if (e.key === "Escape") clear();
-    if (e.key === "+" || e.key === "-" || e.key === "*" || e.key === "/")
+    if (e.key === '.') appendPoint();
+    if (e.key === '=' || e.key === 'Enter') evaluate();
+    if (e.key === 'Backspace') deleteNumber();
+    if (e.key === 'Escape') clear();
+    if (e.key === '+' || e.key === '-' || e.key === '*' || e.key === '/')
         setOperation(convertOperator(e.key));
 }
 
 function convertOperator(keyboardOperator) {
-    if (keyboardOperator === "/") return "÷";
-    if (keyboardOperator === "*") return "x";
-    if (keyboardOperator === "-") return "-";
-    if (keyboardOperator === "+") return "+";
+    if (keyboardOperator === '/') return '÷';
+    if (keyboardOperator === '*') return 'x';
+    if (keyboardOperator === '-') return '-';
+    if (keyboardOperator === '+') return '+';
 }
 // Funcion suma
 function add(a, b) {
@@ -132,7 +135,7 @@ function operate(operator, a, b) {
             return add(a, b);
         case '-':
             return substract(a, b);
-        case '*':
+        case 'x':
             return multiply(a, b);
         case '÷':
             if (b === 0) return null;
