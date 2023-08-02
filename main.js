@@ -153,7 +153,7 @@ function operate(operator, a, b) {
         return factorial(a);
     }
     b = Number(b);
-    switch(operator) {
+    switch(operator.toLowerCase()) {
         case '+':
             return add(a, b);
         case '-':
