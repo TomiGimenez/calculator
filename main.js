@@ -27,7 +27,14 @@ operatorButtons.forEach((button) =>
 );
 
 function appendNumber(number) {
-    if (currentOperationScreen.textContent === '0' || shouldResetScreen) resetScreen();
+    if (currentOperationScreen.textContent === '0' || shouldResetScreen) {
+        if (currentOperation) {
+            resetScreen();
+        } else {
+        resetScreen();
+        lastOperationScreen.textContent = '';
+        }
+    }
     currentOperationScreen.textContent += number;
 }
 
@@ -75,6 +82,7 @@ function evaluate() {
     );
     lastOperationScreen.textContent = `${firstOperand} ${currentOperation} ${secondOperand} =`
     currentOperation = null;
+    shouldResetScreen = true; // Borra currentOperationScreen al escribir un numero nuevo despues de una operacion
 }
 
 function roundResult(number) {
