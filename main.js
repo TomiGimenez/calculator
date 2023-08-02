@@ -5,6 +5,7 @@ let shouldResetScreen = false;
 
 const numberButtons = document.querySelectorAll('#number-button');
 const operatorButtons = document.querySelectorAll('#operator-button');
+const factorialButton = document.querySelector('#factorial-button');
 const equalsButton = document.querySelector('#equals-button');
 const clearButton = document.querySelector('#clear-button');
 const deleteButton = document.querySelector('#delete-button');
@@ -68,6 +69,17 @@ function setOperation(operator) {
     currentOperation = operator;
     lastOperationScreen.textContent = `${firstOperand} ${currentOperation}`
     shouldResetScreen = true;
+
+    if (currentOperation === '!') {
+        console.log("dentro");
+        currentOperationScreen.textContent = roundResult(
+            operate('!', firstOperand, 0)
+        );
+        lastOperationScreen.textContent = `${firstOperand} ${currentOperation} =`
+        currentOperation = null;
+        shouldResetScreen = true;
+    }
+
 }
 
 function evaluate() {
@@ -126,17 +138,20 @@ function power(a,b) {
     return a**b;
 };
 // Funcion potencia
-function factorial(n) {
-    if (n === 0) return 1;
+function factorial(a) {
+    if (a === 0) return 1;
     let product = 1;
-    for (n; n > 0; n--) {
-        product *= n;
+    for (let i = a; i > 0; i--) {
+        product *= i;
     }
     return product;
 };
 
 function operate(operator, a, b) {
     a = Number(a);
+    if (operator === '!') {
+        return factorial(a);
+    }
     b = Number(b);
     switch(operator) {
         case '+':
@@ -150,8 +165,6 @@ function operate(operator, a, b) {
             else return divide(a, b);
         case '^':
             return power(a, b);
-        case '!':
-            return factorial(a);
         default:
             return null;
     }
