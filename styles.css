@@ -1,5 +1,5 @@
 :root {
-    --body: #d9e1f8;
+    --background: #d9e1f8;
     --font: #222;
     --border: #333;
     --calculator: #ffffff;
@@ -30,9 +30,9 @@ html {
 }
 
 body {
-    background-color: var(--body);
+    background-color: var(--background);
     color: var(--font);
-    font-family: 'Roboto', sans-serif;
+    font-size: 1.6rem;
 }
 
 button {
@@ -43,10 +43,10 @@ button {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 80vh;
+    height: 90vh;
     padding: 1rem;
     /* footer support */
-    margin-bottom: 8rem;
+    margin-bottom: 60px;
 }
 
 .calculator {
@@ -59,16 +59,23 @@ button {
 }
 
 .screen {
-    min-height: 80px;
+    min-height: 120px;
     padding: 20px;
     border: 2px var(--border) solid;
     border-radius: 10px;
     margin-bottom: 20px;
     background-color: var(--screen);
-    font-size: 30px;
     text-align: right;
     word-wrap: break-word;
     word-break: break-all;
+}
+
+.screen-last {
+    font-size: 30px;
+}
+
+.screen-current {
+    font-size: 60px;
 }
 
 .buttons-grid {
